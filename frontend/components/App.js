@@ -25,16 +25,25 @@ export default class App extends React.Component {
   componentDidMount() {
     this.fetchTodos();
   }
-  todoOnChange = evt => {
-    const { value } = evt.target
-    this.setState({...this.state, todoName: value})
-  }
+  todoOnChange = (evt) => {
+    const { value } = evt.target;
+    this.setState({ ...this.state, todoName: value });
+  };
+  todoSubmit = (evt) => {
+    evt.preventDefault();
+    this.postNewTodo();
+  };
   postNewTodo = () => {
-    axios.post(URL, { name: this.state.todoName })
-      .then(res => {
-        
+    axios
+      .post(URL, { name: this.state.todoName })
+      .then((res) => {
+        this.fetchTodos()
+        this.setState({...this.state, todoName: ''})
       })
-  }
+      .catch((err) =>
+        this.setState({ ...this.state, error: err.response.data.message })
+      );
+  };
 
   render() {
     return (
@@ -53,7 +62,7 @@ export default class App extends React.Component {
             placeholder="Type todo"
             onChange={this.todoOnChange}
           />
-          <input type="submit" />
+          <input type="submit" onSubmit={this.todoSubmit} />
           <br />
           <br />
           <input type="button" value="Hide Completed" />
