@@ -12,41 +12,48 @@ export default class App extends React.Component {
       todoName: "",
     };
   }
-  resetForm = () => {
-    this.setState({ ...this.state, todoName: '' });
+
+  errorResponse = (error) => {
+    this.setState({ ...this.state, error: error.response.data.message });
   };
+
+  resetForm = () => {
+    this.setState({ ...this.state, todoName: "" });
+  };
+
   todoSubmit = (evt) => {
     evt.preventDefault();
     this.postNewTodo();
   };
+
   todoOnChange = (evt) => {
     const { value } = evt.target;
     this.setState({ ...this.state, todoName: value });
   };
+
   postNewTodo = () => {
     axios
       .post(URL, { name: this.state.todoName })
       .then((res) => {
-        this.fetchTodos();
+        this.setState({ ...this.state, todos: this.state.todos.concat(res.data.data) });
         this.resetForm();
       })
-      .catch((err) =>
-        this.setState({ ...this.state, error: err.response.data.message })
-      );
+      .catch(this.errorResponse);
   };
+
   fetchTodos = () => {
     return axios
       .get(URL)
       .then((res) => {
         this.setState({ ...this.state, todos: res.data.data });
       })
-      .catch((err) =>
-        this.setState({ ...this.state, error: err.response.data.message })
-      );
+      .catch(this.errorResponse);
   };
+
   componentDidMount() {
     this.fetchTodos();
   }
+
   render() {
     return (
       <div>
@@ -54,7 +61,7 @@ export default class App extends React.Component {
         <div id="todos">
           <h2>Todos:</h2>
           {this.state.todos.map((todo) => {
-            return <div key={todo.id}>{todo.name}</div>
+            return <div key={todo.id}>{todo.name}</div>;
           })}
         </div>
         <form onSubmit={this.todoSubmit}>
