@@ -8,7 +8,8 @@ export default class App extends React.Component {
     super();
     this.state = {
       todos: [],
-      error: ''
+      error: "",
+      todoName: "",
     };
   }
   fetchTodos = () => {
@@ -17,24 +18,41 @@ export default class App extends React.Component {
       .then((res) => {
         this.setState({ ...this.state, todos: res.data.data });
       })
-      .catch((err) => this.setState({...this.state, error: err.response.data.message}));
+      .catch((err) =>
+        this.setState({ ...this.state, error: err.response.data.message })
+      );
   };
   componentDidMount() {
     this.fetchTodos();
+  }
+  todoOnChange = evt => {
+    const { value } = evt.target
+    this.setState({...this.state, todoName: value})
+  }
+  postNewTodo = () => {
+    axios.post(URL, { name: this.state.todoName })
+      .then(res => {
+        
+      })
   }
 
   render() {
     return (
       <div>
-      <div id="error">{this.state.error}</div>
-      <div id ="todos">
-        <h2>Todos:</h2>
-        {this.state.todos.map(todo => {
-          return <div key={todo.id}>{todo.name}</div>
-        }) }
+        <div id="error">{this.state.error}</div>
+        <div id="todos">
+          <h2>Todos:</h2>
+          {this.state.todos.map((todo) => {
+            return <div key={todo.id}>{todo.name}</div>;
+          })}
         </div>
         <form>
-          <input type="text" placeholder="Type todo" />
+          <input
+            value={this.state.todoName}
+            type="text"
+            placeholder="Type todo"
+            onChange={this.todoOnChange}
+          />
           <input type="submit" />
           <br />
           <br />
