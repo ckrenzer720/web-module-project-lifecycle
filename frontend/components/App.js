@@ -35,12 +35,17 @@ export default class App extends React.Component {
   };
 
   postNewTodo = () => {
+    if (!this.state.todoName.trim()) {
+      this.setState({ error: "Todo name cannot be empty" });
+      return;
+    }
     axios
       .post(URL, { name: this.state.todoName })
       .then((res) => {
         this.setState({
           ...this.state,
           todos: this.state.todos.concat(res.data.data),
+          error: "",
         });
         this.resetForm();
       })
