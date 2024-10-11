@@ -1,5 +1,7 @@
 import React from "react";
 import axios from "axios";
+import Form from "./Form";
+import TodoList from "./TodoList";
 
 const URL = "http://localhost:9000/api/todos";
 
@@ -10,6 +12,7 @@ export default class App extends React.Component {
       todos: [],
       error: "",
       todoName: "",
+      completed: true,
     };
   }
 
@@ -72,32 +75,26 @@ export default class App extends React.Component {
     this.fetchTodos();
   }
 
+  showCompleted = () => {
+    this.setState({ ...this.state, completed: !this.state.completed });
+  };
+
   render() {
     return (
       <div>
         <div id="error">{this.state.error}</div>
-        <div id="todos">
-          <h2>Todos:</h2>
-          {this.state.todos.map((todo) => {
-            return (
-              <div onClick={this.toggleCompleted(todo.id)} key={todo.id}>
-                {todo.name} {todo.completed ? " √" : ""}
-              </div>
-            );
-          })}
-        </div>
-        <form onSubmit={this.todoSubmit}>
-          <input
-            value={this.state.todoName}
-            type="text"
-            placeholder="Type todo"
-            onChange={this.todoOnChange}
-          />
-          <input type="submit" />
-          <br />
-          <br />
-          <input type="button" value="Hide Completed" />
-        </form>
+        <TodoList
+          todos={this.state.todos}
+          completed={this.state.completed}
+          toggleCompleted={this.toggleCompleted}
+        />
+        <Form
+          todoSubmit={this.todoSubmit}
+          todoOnChange={this.todoOnChange}
+          showCompleted={this.showCompleted}
+          todoName={this.state.todoName}
+          completed={this.state.completed}
+        />
       </div>
     );
   }

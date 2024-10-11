@@ -3,7 +3,22 @@ import React from "react";
 export default class Form extends React.Component {
   render() {
     return (
-      <></>
+      <>
+        <form onSubmit={this.props.todoSubmit}>
+          <input
+            value={this.props.todoName}
+            type="text"
+            placeholder="Type todo"
+            onChange={this.props.todoOnChange}
+          />
+          <input type="submit" />
+          <br />
+          <br />
+          <button onClick={this.props.showCompleted}>
+            {this.props.completed ? "Hide" : "Show"} Completed
+          </button>
+        </form>
+      </>
     );
   }
 }
